@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="محمد ناصر - مطور واجهات أمامية متخصص في تصميم وتطوير المواقع الحديثة والسريعة">
+<meta name="keywords" content="محمد ناصر, مطور مواقع, مبرمج, Front-End Developer, Web Design, Egypt">
+<meta name="author" content="Mohamed Nasser">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mohamed-nasser.web.app/">
+<meta property="og:title" content="محمد ناصر | Front-End Developer">
+<meta property="og:description" content="متخصص في تصميم وتطوير المواقع الحديثة والسريعة والمتجاوبة لجميع الأجهزة.">
+<meta property="og:image" content="https://mohamed-nasser.web.app/og-image.jpg">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://mohamed-nasser.web.app/">
+<meta property="twitter:title" content="محمد ناصر | Front-End Developer">
+<meta property="twitter:description" content="متخصص في تصميم وتطوير المواقع الحديثة والسريعة والمتجاوبة لجميع الأجهزة.">
+<meta property="twitter:image" content="https://mohamed-nasser.web.app/og-image.jpg">
+<title>لوحة التحكم | محمد ناصر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="icon" href="..//Protfile/img/logo.jpeg" type="image/jpeg">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --blue:#00d4ff;--blue2:#0099cc;--bg:#050b14;--bg2:#080f1e;--bg3:#0d1a2d;
+  --card:#0a1628;--border:rgba(0,212,255,0.15);--text:#e0eaff;--muted:#6a85a8;
+  --glow:0 0 20px rgba(0,212,255,0.4);--red:#ff4d6d;--green:#00e676;
+  --font:'Cairo',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);direction:rtl;min-height:100vh}
+input,textarea,select{font-family:var(--font)}
+a{text-decoration:none;color:inherit}
+
+/* ========= LOGIN ========= */
+#loginPage{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at center,#071e38 0%,var(--bg) 70%);
+  position:relative;overflow:hidden;
+}
+#loginPage::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300d4ff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.login-box{
+  background:var(--card);border:1px solid var(--border);border-radius:24px;
+  padding:50px 40px;width:100%;max-width:420px;position:relative;z-index:1;
+  box-shadow:var(--glow),0 30px 60px rgba(0,0,0,0.5);
+}
+.login-logo{text-align:center;margin-bottom:35px}
+.login-logo .brand{font-size:42px;font-weight:900;color:var(--blue);line-height:1}
+.login-logo p{color:var(--muted);font-size:14px;margin-top:8px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:14px;font-weight:600;margin-bottom:8px;color:var(--muted)}
+.form-group input{
+  width:100%;padding:14px 16px;background:var(--bg3);
+  border:1.5px solid var(--border);border-radius:12px;
+  color:var(--text);font-size:15px;font-family:var(--font);
+  transition:border-color .2s,box-shadow .2s;outline:none;
+}
+.form-group input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,212,255,0.1)}
+.form-group input[type="password"]{letter-spacing:3px}
+.login-btn{
+  width:100%;padding:15px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:#000;font-size:17px;font-weight:700;font-family:var(--font);
+  cursor:pointer;transition:all .3s;box-shadow:var(--glow);margin-top:5px;
+}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 0 35px rgba(0,212,255,0.6)}
+.login-error{
+  background:rgba(255,77,109,0.1);border:1px solid rgba(255,77,109,0.3);
+  border-radius:10px;padding:12px 16px;font-size:14px;color:var(--red);
+  margin-bottom:18px;display:none;text-align:center;
+}
+
+/* ========= DASHBOARD ========= */
+#dashboard{display:none;min-height:100vh;flex-direction:row}
+
+/* Sidebar */
+.sidebar{
+  width:260px;min-height:100vh;background:var(--bg2);
+  border-left:1px solid var(--border);position:fixed;top:0;right:0;
+  display:flex;flex-direction:column;z-index:100;
+}
+.sidebar-header{
+  padding:25px 20px;border-bottom:1px solid var(--border);
+}
+.sidebar-header .brand{font-size:22px;font-weight:900;color:var(--blue)}
+.sidebar-header p{font-size:12px;color:var(--muted);margin-top:4px}
+.sidebar-nav{flex:1;padding:15px 12px;overflow-y:auto}
+.nav-item{
+  display:flex;align-items:center;gap:12px;padding:12px 16px;
+  border-radius:12px;cursor:pointer;margin-bottom:4px;
+  transition:all .2s;color:var(--muted);font-size:14px;font-weight:600;
+}
+.nav-item:hover{background:rgba(0,212,255,0.08);color:var(--text)}
+.nav-item.active{background:rgba(0,212,255,0.12);color:var(--blue)}
+.nav-item .icon{font-size:18px;width:22px;text-align:center;flex-shrink:0}
+.sidebar-footer{
+  padding:20px;border-top:1px solid var(--border);
+}
+.logout-btn{
+  width:100%;padding:11px;border:1.5px solid rgba(255,77,109,0.4);
+  border-radius:10px;background:transparent;color:var(--red);
+  font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;
+}
+.logout-btn:hover{background:rgba(255,77,109,0.1)}
+
+/* Main Content */
+.main-content{
+  margin-right:260px;flex:1;padding:30px;min-height:100vh;
+}
+.page-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:30px;
+}
+.page-header h1{font-size:26px;font-weight:900}
+.page-header h1 span{color:var(--blue)}
+.view-site-btn{
+  padding:10px 22px;border-radius:10px;background:rgba(0,212,255,0.1);
+  border:1.5px solid var(--border);color:var(--blue);font-family:var(--font);
+  font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;
+}
+.view-site-btn:hover{background:rgba(0,212,255,0.15);border-color:var(--blue)}
+
+/* Panels */
+.panel{display:none}
+.panel.active{display:block}
+
+/* Cards */
+.edit-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:18px;padding:25px;margin-bottom:20px;
+}
+.edit-card h3{
+  font-size:16px;font-weight:700;margin-bottom:20px;padding-bottom:14px;
+  border-bottom:1px solid var(--border);color:var(--blue);
+  display:flex;align-items:center;gap:8px;
+}
+.field-group{margin-bottom:18px}
+.field-group label{
+  display:block;font-size:13px;font-weight:600;
+  color:var(--muted);margin-bottom:7px;
+}
+.field-group input,.field-group textarea{
+  width:100%;padding:12px 14px;background:var(--bg3);
+  border:1.5px solid var(--border);border-radius:10px;
+  color:var(--text);font-size:14px;font-family:var(--font);
+  outline:none;transition:border-color .2s,box-shadow .2s;
+}
+.field-group textarea{resize:vertical;min-height:90px;line-height:1.6}
+.field-group input:focus,.field-group textarea:focus{
+  border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,212,255,0.08);
+}
+.image-upload-wrapper{
+  display:flex;flex-direction:column;gap:10px;margin-bottom:15px;
+}
+.image-preview{
+  width:80px;height:80px;border-radius:12px;border:1px solid var(--border);
+  background:var(--bg3);display:flex;align-items:center;justify-content:center;
+  overflow:hidden;background-size:cover;background-position:center;
+}
+.image-preview img{max-width:100%;max-height:100%;object-fit:contain}
+.upload-controls{display:flex;align-items:center;gap:10px}
+.file-input-label{
+  padding:8px 16px;background:rgba(0,212,255,0.1);border:1px solid var(--border);
+  border-radius:8px;font-size:12px;font-weight:700;color:var(--blue);
+  cursor:pointer;transition:all .2s;
+}
+.file-input-label:hover{background:rgba(0,212,255,0.2);border-color:var(--blue)}
+.hidden-file-input{display:none}
+.fields-row{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.save-btn{
+  padding:12px 28px;border:none;border-radius:10px;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:#000;font-family:var(--font);font-size:15px;font-weight:700;
+  cursor:pointer;transition:all .2s;box-shadow:var(--glow);
+}
+.save-btn:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(0,212,255,0.5)}
+.save-btn:active{transform:scale(0.98)}
+
+/* Success toast */
+.toast{
+  position:fixed;bottom:30px;left:30px;z-index:9999;
+  background:var(--green);color:#000;padding:14px 24px;border-radius:12px;
+  font-weight:700;font-size:15px;
+  transform:translateY(100px);opacity:0;transition:all .3s;pointer-events:none;
+}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* Pricing items */
+.price-items{display:flex;flex-direction:column;gap:15px}
+.price-item-edit{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:12px;padding:18px;
+}
+.price-item-edit h4{font-size:13px;color:var(--blue);font-weight:700;margin-bottom:12px}
+
+/* Stats cards */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-bottom:30px}
+.stat-card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:22px;text-align:center;
+}
+.stat-card .num{font-size:32px;font-weight:900;color:var(--blue)}
+.stat-card .lbl{font-size:13px;color:var(--muted);margin-top:5px}
+
+/* Password section */
+.pass-info{
+  background:rgba(0,212,255,0.06);border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;font-size:13px;color:var(--muted);margin-bottom:18px;
+}
+.pass-info strong{color:var(--blue)}
+
+/* Timeline items */
+.tl-items{display:flex;flex-direction:column;gap:15px}
+.tl-item-edit{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:12px;padding:18px;
+}
+.tl-item-edit h4{font-size:13px;color:var(--blue);font-weight:700;margin-bottom:12px}
+
+/* Portfolio items */
+.port-items{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.port-item-edit{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:12px;padding:18px;
+}
+.port-item-edit h4{font-size:13px;color:var(--blue);font-weight:700;margin-bottom:12px}
+
+/* Contact items */
+.contact-items{display:flex;flex-direction:column;gap:15px}
+
+@media(max-width:900px){
+  .sidebar{width:220px}
+  .main-content{margin-right:220px;padding:20px}
+  .fields-row{grid-template-columns:1fr}
+  .port-items{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+  .sidebar{transform:translateX(100%);transition:transform .3s}
+  .sidebar.open{transform:translateX(0)}
+  .main-content{margin-right:0}
+  .mob-menu-btn{display:flex!important}
+  .stats-grid{grid-template-columns:1fr 1fr}
+}
+.mob-menu-btn{
+  display:none;align-items:center;justify-content:center;
+  width:40px;height:40px;background:rgba(0,212,255,0.1);
+  border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:20px;
+  background:none;color:var(--text);
+}
+/* Loading Overlay */
+#adminLoader {
+  position: fixed; inset: 0; background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10000; transition: opacity .3s, visibility .3s;
+}
+#adminLoader.hide { opacity: 0; visibility: hidden; }
+</style>
+</head>
+<body>
+<!-- Admin Loader -->
+<div id="adminLoader"><div class="brand" style="font-size:32px;font-weight:900;color:var(--blue)">MN<span style="color:#fff">.</span></div></div>
+
+<!-- Toast -->
+<div class="toast" id="toast">✓ تم الحفظ بنجاح!</div>
+
+<!-- ========= LOGIN PAGE ========= -->
+<div id="loginPage">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="brand">MN<span style="color:#fff">.</span></div>
+      <p>لوحة تحكم محمد ناصر</p>
+    </div>
+    <div class="login-error" id="loginError">❌ البريد أو كلمة المرور غلط</div>
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="email" placeholder="admin@mn.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label>كلمة المرور</label>
+        <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="login-btn">دخول للوحة التحكم</button>
+    </form>
+  </div>
+</div>
+
+<!-- ========= DASHBOARD ========= -->
+<div id="dashboard">
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand">MN<span style="color:#fff">.</span></div>
+      <p>لوحة التحكم</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" onclick="showPanel('home')">
+        <span class="icon">🏠</span> الرئيسية (Hero)
+      </div>
+
+      <div class="nav-item" onclick="showPanel('delivery')">
+        <span class="icon">⏱</span> مدة الاستلام
+      </div>
+      <div class="nav-item" onclick="showPanel('skills')">
+        <span class="icon">💻</span> المهارات
+      </div>
+      <div class="nav-item" onclick="showPanel('portfolio')">
+        <span class="icon">🖼</span> معرض الأعمال
+      </div>
+      <div class="nav-item" onclick="showPanel('contact')">
+        <span class="icon">📞</span> التواصل
+      </div>
+      <div class="nav-item" onclick="showPanel('settings')">
+        <span class="icon">⚙️</span> الإعدادات
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="logout()">🚪 تسجيل الخروج</button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main-content">
+    <div class="page-header">
+      <div style="display:flex;align-items:center;gap:15px">
+        <button class="mob-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <h1>لوحة <span>التحكم</span></h1>
+      </div>
+      <a href="index.html" target="_blank" class="view-site-btn">👁 عرض الموقع</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card"><div class="num">5</div><div class="lbl">أقسام الموقع</div></div>
+
+      <div class="stat-card"><div class="num">6</div><div class="lbl">مشاريع المعرض</div></div>
+      <div class="stat-card"><div class="num">5</div><div class="lbl">وسائل التواصل</div></div>
+    </div>
+
+    <!-- ===== PANEL: HOME ===== -->
+    <div class="panel active" id="panel-home">
+      <div class="edit-card">
+        <h3>🏠 قسم الرئيسية (Hero)</h3>
+        <div class="fields-row">
+          <div class="field-group">
+            <label>اللوجو (صورة)</label>
+            <div class="image-upload-wrapper">
+              <div class="image-preview" id="logoPreview"></div>
+              <div class="upload-controls">
+                <label class="file-input-label" for="logoUpload">اختيار صورة</label>
+                <input type="file" id="logoUpload" class="hidden-file-input" accept="image/*" onchange="handleFileUpload(event, 'logo')">
+                <input type="text" id="siteLogoImgUrl" placeholder="أو رابط خارجي" style="flex:1">
+              </div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>نص اللوجو (MN)</label>
+            <input type="text" id="siteLogo" placeholder="MN">
+          </div>
+        </div>
+        <div class="field-group">
+          <label>صورتك الشخصية / اللوجو الدائري (Avatar)</label>
+          <div class="image-upload-wrapper">
+            <div class="image-preview" id="avatarPreview" style="border-radius:50%"></div>
+            <div class="upload-controls">
+              <label class="file-input-label" for="avatarUpload">اختيار صورة</label>
+              <input type="file" id="avatarUpload" class="hidden-file-input" accept="image/*" onchange="handleFileUpload(event, 'avatar')">
+              <input type="text" id="heroAvatarUrl" placeholder="أو رابط خارجي" style="flex:1">
+            </div>
+          </div>
+        </div>
+        <div class="fields-row">
+          <div class="field-group"><label>الاسم</label><input type="text" id="heroName"></div>
+          <div class="field-group"><label>المسمى الوظيفي</label><input type="text" id="heroTitle"></div>
+        </div>
+        <div class="field-group"><label>الوصف المختصر</label><textarea id="heroDesc"></textarea></div>
+        <div class="field-group"><label>نص زر CTA</label><input type="text" id="heroCta"></div>
+        <button class="save-btn" onclick="saveSection('hero')">💾 حفظ التغييرات</button>
+      </div>
+      <div class="edit-card">
+        <h3>📝 نصوص عامة</h3>
+        <div class="field-group">
+          <label>نص حقوق النشر (Footer)</label>
+          <input type="text" id="footerText" placeholder="© 2026 Mohamed Nasser - جميع الحقوق محفوظة">
+        </div>
+        <button class="save-btn" onclick="saveSection('general')">💾 حفظ النصوص العامة</button>
+      </div>
+    </div>
+
+
+
+    <!-- ===== PANEL: DELIVERY ===== -->
+    <div class="panel" id="panel-delivery">
+      <div class="edit-card">
+        <h3>⏱ إعدادات مدة الاستلام</h3>
+        <div class="fields-row">
+          <div class="field-group"><label>العنوان الرئيسي</label><input type="text" id="hDeliveryTitle"></div>
+          <div class="field-group"><label>العنوان الفرعي</label><input type="text" id="hDeliverySub"></div>
+        </div>
+        <hr style="margin:20px 0; border:0; border-top:1px solid var(--border)">
+        <div id="tlItems" class="tl-items"></div>
+        <button class="view-site-btn" style="margin-top:20px; width:100%; border-style:dashed" onclick="addItem('delivery')">+ إضافة مدة استلام</button>
+        <br><br>
+        <button class="save-btn" onclick="saveSection('delivery')">💾 حفظ التغييرات</button>
+      </div>
+    </div>
+
+    <!-- ===== PANEL: SKILLS ===== -->
+    <div class="panel" id="panel-skills">
+      <div class="edit-card">
+        <h3>💻 إعدادات قسم المهارات</h3>
+        <div class="fields-row">
+          <div class="field-group"><label>العنوان الرئيسي</label><input type="text" id="hSkillsTitle"></div>
+          <div class="field-group"><label>العنوان الفرعي</label><input type="text" id="hSkillsSub"></div>
+        </div>
+        <hr style="margin:20px 0; border:0; border-top:1px solid var(--border)">
+        <div id="skillItems" class="skills-items-admin"></div>
+        <button class="view-site-btn" style="margin-top:20px; width:100%; border-style:dashed" onclick="addItem('skills')">+ إضافة مهارة جديدة</button>
+        <br><br>
+        <button class="save-btn" onclick="saveSection('skills')">💾 حفظ المهارات</button>
+      </div>
+    </div>
+
+    <!-- ===== PANEL: PORTFOLIO ===== -->
+    <div class="panel" id="panel-portfolio">
+      <div class="edit-card">
+        <h3>🖼 إعدادات معرض الأعمال</h3>
+        <div class="fields-row">
+          <div class="field-group"><label>العنوان الرئيسي</label><input type="text" id="hPortfolioTitle"></div>
+          <div class="field-group"><label>العنوان الفرعي</label><input type="text" id="hPortfolioSub"></div>
+        </div>
+        <hr style="margin:20px 0; border:0; border-top:1px solid var(--border)">
+        <div id="portItems" class="port-items"></div>
+        <button class="view-site-btn" style="margin-top:20px; width:100%; border-style:dashed" onclick="addItem('portfolio')">+ إضافة مشروع جديد</button>
+        <br><br>
+        <button class="save-btn" onclick="saveSection('portfolio')">💾 حفظ التغييرات</button>
+      </div>
+    </div>
+
+    <!-- ===== PANEL: CONTACT ===== -->
+    <div class="panel" id="panel-contact">
+      <div class="edit-card">
+        <h3>📞 إعدادات قسم التواصل</h3>
+        <div class="fields-row">
+          <div class="field-group"><label>العنوان الرئيسي</label><input type="text" id="hContactTitle"></div>
+          <div class="field-group"><label>العنوان الفرعي</label><input type="text" id="hContactSub"></div>
+        </div>
+        <hr style="margin:20px 0; border:0; border-top:1px solid var(--border)">
+        <div class="contact-items">
+          <div class="field-group"><label>رقم الهاتف</label><input type="text" id="cPhone" placeholder="01040128359"></div>
+          <div class="field-group"><label>رابط واتساب (رقم فقط مع كود الدولة)</label><input type="text" id="cWhatsapp" placeholder="201040128359"></div>
+          <div class="field-group"><label>رابط فيسبوك</label><input type="text" id="cFacebook" placeholder="https://facebook.com/..."></div>
+          <div class="field-group"><label>رابط إنستجرام</label><input type="text" id="cInstagram" placeholder="https://instagram.com/..."></div>
+          <div class="field-group"><label>رابط تيليجرام</label><input type="text" id="cTelegram" placeholder="https://t.me/..."></div>
+        </div>
+        <button class="save-btn" onclick="saveSection('contact')">💾 حفظ التغييرات</button>
+      </div>
+    </div>
+
+    <!-- ===== PANEL: SETTINGS ===== -->
+    <div class="panel" id="panel-settings">
+      <div class="edit-card">
+        <h3>⚙️ تغيير بيانات الدخول</h3>
+        <div class="pass-info">
+          البريد الحالي: <strong id="currentEmailDisplay"></strong>
+        </div>
+        <div class="field-group"><label>البريد الإلكتروني الجديد</label><input type="email" id="newEmail" placeholder="admin@mn.com"></div>
+        <div class="field-group"><label>كلمة المرور الجديدة</label><input type="password" id="newPass" placeholder="••••••••"></div>
+        <div class="field-group"><label>تأكيد كلمة المرور</label><input type="password" id="confirmPass" placeholder="••••••••"></div>
+        <button class="save-btn" onclick="saveCredentials()">💾 حفظ بيانات الدخول</button>
+      </div>
+      <div class="edit-card">
+        <h3>🔄 إعادة ضبط محتوى الموقع</h3>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:18px">سيتم حذف جميع التغييرات والعودة للمحتوى الافتراضي</p>
+        <button onclick="resetAll()" style="padding:12px 28px;border:1.5px solid var(--red);border-radius:10px;background:rgba(255,77,109,0.1);color:var(--red);font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(255,77,109,0.2)'" onmouseout="this.style.background='rgba(255,77,109,0.1)'">
+          🗑 إعادة الضبط
+        </button>
+      </div>
+    </div>
+
+  </div><!-- end main-content -->
+</div><!-- end dashboard -->
+
+<!-- Firebase SDK (Compat Version) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAYm1y3AsVdlk4DNj5bIJMciLmqSsTvSGI",
+    authDomain: "profile-685e8.firebaseapp.com",
+    projectId: "profile-685e8",
+    storageBucket: "profile-685e8.firebasestorage.app",
+    messagingSenderId: "198395442971",
+    appId: "1:198395442971:web:eca9fe6903973aa21dc5be",
+    measurementId: "G-SZFDCWQSMR"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  window.db = firebase.firestore();
+  window.auth = firebase.auth();
+
+  // Mapping new syntax to compat syntax for admin-script.js
+  window.doc = (db, col, id) => db.collection(col).doc(id);
+  window.getDoc = (docRef) => docRef.get().then(s => ({ exists: () => s.exists, data: () => s.data() }));
+  window.setDoc = (docRef, data) => docRef.set(data);
+  window.signInWithEmailAndPassword = (auth, e, p) => auth.signInWithEmailAndPassword(e, p);
+  window.onAuthStateChanged = (auth, cb) => auth.onAuthStateChanged(cb);
+  window.signOut = (auth) => auth.signOut();
+  window.updateEmail = (user, email) => user.updateEmail(email);
+  window.updatePassword = (user, pass) => user.updatePassword(pass);
+</script>
+
+<script src="admin-script.js"></script>
+</body>
+</html>
