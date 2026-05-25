@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Hydra Portfolio CMS | لوحة التحكم</title>
+<link rel="icon" href="img/logo.png?v=2" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════
+   ROOT & RESET
+══════════════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07090f;--bg2:#0c0e18;--bg3:#11141f;--card:#0f1220;
+  --border:rgba(0, 180, 216, 0.18);--border-soft:rgba(255,255,255,0.07);
+  --text:#eef0f5;--soft:#a0a8bc;--muted:#4e5570;
+  --indigo:#00b4d8;--indigo-dim:rgba(0, 180, 216, 0.12);
+  --sky:#00f5ff;--emerald:#34d399;--amber:#fbbf24;--rose:#fb7185;
+  --font:'Cairo',sans-serif;--font-en:'Outfit',sans-serif;
+  --radius:10px;--radius-lg:16px;--ease:cubic-bezier(.22,1,.36,1);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);direction:rtl;min-height:100vh;line-height:1.7}
+input,textarea,select{font-family:var(--font)}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:var(--font);border:none;background:none}
+
+/* ══════════════════════════════════════════════════
+   LOADER
+══════════════════════════════════════════════════ */
+#adminLoader{
+  position:fixed;inset:0;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  z-index:10000;transition:opacity .4s var(--ease),visibility .4s var(--ease);
+  flex-direction:column;gap:16px;
+}
+#adminLoader.hide{opacity:0;visibility:hidden;pointer-events:none}
+.loader-brand{font:900 36px var(--font-en);color:var(--text)}.loader-brand span{color:var(--indigo)}
+.loader-sub{color:var(--muted);font-size:14px;font-weight:600}
+.loader-bar{width:160px;height:3px;border-radius:99px;background:rgba(255,255,255,0.07);overflow:hidden}
+.loader-bar-inner{height:100%;width:0;background:linear-gradient(90deg,var(--indigo),var(--sky));border-radius:99px;animation:load-bar 1.8s var(--ease) forwards}
+@keyframes load-bar{to{width:100%}}
+
+/* ══════════════════════════════════════════════════
+   LOGIN
+══════════════════════════════════════════════════ */
+#loginPage{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(99,102,241,0.1),transparent 70%),var(--bg);
+  position:relative;overflow:hidden;
+}
+.login-box{
+  background:var(--card);border:1px solid var(--border);border-radius:24px;
+  padding:48px 40px;width:100%;max-width:420px;position:relative;z-index:1;
+  box-shadow:0 30px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(99,102,241,0.08);
+}
+.login-logo{text-align:center;margin-bottom:36px}
+.login-logo .brand{font:900 40px var(--font-en);color:var(--text)}.login-logo .brand span{color:var(--indigo)}
+.login-logo p{color:var(--muted);font-size:14px;margin-top:8px;font-weight:600}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:13px;font-weight:700;margin-bottom:8px;color:var(--soft)}
+.form-group input{
+  width:100%;padding:14px 16px;background:var(--bg3);
+  border:1.5px solid var(--border-soft);border-radius:var(--radius);
+  color:var(--text);font-size:15px;transition:border-color .2s,box-shadow .2s;outline:none;
+}
+.form-group input:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(99,102,241,0.12)}
+.form-group input[type="password"]{letter-spacing:3px}
+.login-btn{
+  width:100%;padding:15px;border:none;border-radius:var(--radius);
+  background:var(--indigo);color:#fff;font-size:16px;font-weight:800;
+  transition:opacity .2s,transform .2s;box-shadow:0 8px 30px rgba(99,102,241,0.35);margin-top:4px;
+}
+.login-btn:hover{opacity:.88;transform:translateY(-2px)}
+.login-error{
+  background:rgba(251,113,133,0.1);border:1px solid rgba(251,113,133,0.3);
+  border-radius:var(--radius);padding:12px 16px;font-size:14px;color:var(--rose);
+  margin-bottom:18px;display:none;text-align:center;font-weight:700;
+}
+
+/* ══════════════════════════════════════════════════
+   DASHBOARD LAYOUT
+══════════════════════════════════════════════════ */
+#dashboard{display:none;min-height:100vh}
+
+/* Sidebar */
+.sidebar{
+  width:268px;min-height:100vh;background:var(--bg2);
+  border-left:1px solid var(--border-soft);position:fixed;top:0;right:0;
+  display:flex;flex-direction:column;z-index:100;transition:transform .3s var(--ease);
+}
+.sidebar-header{padding:26px 22px;border-bottom:1px solid var(--border-soft)}
+.sidebar-header .brand{font:900 24px var(--font-en);color:var(--text)}.sidebar-header .brand span{color:var(--indigo)}
+.sidebar-header p{font-size:12px;color:var(--muted);margin-top:4px;font-weight:600}
+.sidebar-nav{flex:1;padding:14px 12px;overflow-y:auto}
+.nav-group-label{font:700 10px var(--font-en);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:14px 14px 6px}
+.nav-item{
+  display:flex;align-items:center;gap:12px;padding:11px 14px;
+  border-radius:var(--radius);cursor:pointer;margin-bottom:2px;
+  transition:background .18s,color .18s;color:var(--soft);font-size:14px;font-weight:700;
+}
+.nav-item:hover{background:rgba(255,255,255,0.05);color:var(--text)}
+.nav-item.active{background:var(--indigo-dim);color:var(--indigo)}
+.nav-item .nav-icon{width:20px;text-align:center;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.nav-icon svg{width:17px;height:17px}
+.sidebar-footer{padding:18px 16px;border-top:1px solid var(--border-soft)}
+.logout-btn{
+  width:100%;padding:11px;border:1.5px solid rgba(251,113,133,0.3);
+  border-radius:var(--radius);background:transparent;color:var(--rose);
+  font-size:14px;font-weight:700;transition:background .2s,border-color .2s;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.logout-btn svg{width:16px;height:16px}
+.logout-btn:hover{background:rgba(251,113,133,0.08);border-color:rgba(251,113,133,0.5)}
+
+/* Main */
+.main-content{margin-right:268px;flex:1;padding:32px;min-height:100vh}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+.page-header h1{font-size:24px;font-weight:900}.page-header h1 span{color:var(--indigo)}
+.view-site-btn{
+  display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:var(--radius);
+  background:var(--indigo-dim);border:1.5px solid var(--border);color:var(--indigo);
+  font-size:13px;font-weight:700;transition:background .2s,border-color .2s;
+}
+.view-site-btn svg{width:15px;height:15px}
+.view-site-btn:hover{background:rgba(99,102,241,0.2);border-color:rgba(99,102,241,0.5)}
+.mob-menu-btn{
+  display:none;align-items:center;justify-content:center;
+  width:40px;height:40px;background:rgba(255,255,255,0.05);
+  border:1px solid var(--border-soft);border-radius:var(--radius);color:var(--text);
+}
+.mob-menu-btn svg{width:20px;height:20px}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px}
+.stat-card{background:var(--card);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:22px;text-align:center}
+.stat-card .num{font:900 34px var(--font-en);color:var(--indigo);letter-spacing:-1px}
+.stat-card .lbl{font-size:13px;color:var(--muted);margin-top:6px;font-weight:600}
+
+/* Panels */
+.panel{display:none}.panel.active{display:block}
+
+/* Cards */
+.edit-card{background:var(--card);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:26px;margin-bottom:18px}
+.edit-card-title{
+  font-size:15px;font-weight:800;margin-bottom:22px;padding-bottom:16px;
+  border-bottom:1px solid var(--border-soft);color:var(--text);
+  display:flex;align-items:center;gap:10px;
+}
+.edit-card-title svg{width:18px;height:18px;color:var(--indigo);flex-shrink:0}
+.edit-card-title span{color:var(--indigo)}
+
+.field-group{margin-bottom:16px}
+.field-group label{display:block;font-size:12.5px;font-weight:700;color:var(--soft);margin-bottom:7px;letter-spacing:.02em}
+.field-group input,.field-group textarea,.field-group select{
+  width:100%;padding:12px 14px;background:var(--bg3);
+  border:1.5px solid var(--border-soft);border-radius:var(--radius);
+  color:var(--text);font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;
+}
+.field-group textarea{resize:vertical;min-height:90px;line-height:1.7}
+.field-group input:focus,.field-group textarea:focus,.field-group select:focus{
+  border-color:var(--indigo);box-shadow:0 0 0 3px rgba(99,102,241,0.1);
+}
+.fields-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* Image upload */
+.image-upload-wrapper{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.image-preview{
+  width:76px;height:76px;border-radius:12px;border:1px solid var(--border-soft);
+  background:var(--bg3);display:flex;align-items:center;justify-content:center;
+  overflow:hidden;background-size:cover;background-position:center;color:var(--muted);font-size:22px;
+}
+.upload-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.file-input-label{
+  padding:8px 14px;background:var(--indigo-dim);border:1px solid var(--border);
+  border-radius:8px;font-size:12px;font-weight:700;color:var(--indigo);cursor:pointer;transition:background .2s,border-color .2s;
+}
+.file-input-label:hover{background:rgba(99,102,241,0.22);border-color:rgba(99,102,241,0.5)}
+.hidden-file-input{display:none}
+
+/* Buttons */
+.save-btn{
+  display:inline-flex;align-items:center;gap:8px;padding:12px 26px;border-radius:var(--radius);
+  background:var(--indigo);color:#fff;font-size:14px;font-weight:800;
+  transition:opacity .2s,transform .18s;box-shadow:0 6px 24px rgba(99,102,241,0.3);
+}
+.save-btn svg{width:16px;height:16px}
+.save-btn:hover{opacity:.88;transform:translateY(-2px)}
+
+.add-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:11px;border:1.5px dashed rgba(99,102,241,0.35);
+  border-radius:var(--radius);background:var(--indigo-dim);color:var(--indigo);
+  font-size:14px;font-weight:700;transition:background .2s,border-color .2s;margin-top:14px;
+}
+.add-btn:hover{background:rgba(99,102,241,0.2);border-color:rgba(99,102,241,0.6)}
+.add-btn svg{width:16px;height:16px}
+
+.del-btn{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 12px;
+  border-radius:8px;border:1px solid rgba(251,113,133,0.25);background:rgba(251,113,133,0.08);
+  color:var(--rose);font-size:12px;font-weight:700;transition:background .18s,border-color .18s;
+}
+.del-btn svg{width:13px;height:13px}
+.del-btn:hover{background:rgba(251,113,133,0.16);border-color:rgba(251,113,133,0.5)}
+
+/* Dynamic list items */
+.list-item-edit{
+  background:var(--bg3);border:1px solid var(--border-soft);
+  border-radius:var(--radius);padding:16px;margin-bottom:12px;
+}
+.list-item-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.list-item-head h4{font-size:13px;color:var(--indigo);font-weight:800}
+
+/* Values list admin */
+.values-admin-item{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.values-admin-item input{flex:1}
+.values-admin-item button{flex-shrink:0}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:28px;right:28px;z-index:9999;
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg3);border:1px solid var(--border-soft);color:var(--text);
+  padding:14px 22px;border-radius:var(--radius-lg);font-weight:700;font-size:14px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  transform:translateY(20px);opacity:0;transition:all .3s var(--ease);pointer-events:none;
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-dot{width:8px;height:8px;border-radius:50%;background:var(--emerald);flex-shrink:0}
+.toast.error .toast-dot{background:var(--rose)}
+
+/* Pass section */
+.pass-info{background:var(--indigo-dim);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;font-size:13px;color:var(--soft);margin-bottom:18px}
+.pass-info strong{color:var(--indigo)}
+.inline-check{
+  display:flex;align-items:center;gap:8px;margin:4px 0 16px;
+  color:var(--soft);font-size:13px;font-weight:800;
+}
+.inline-check input{width:16px;height:16px;accent-color:var(--indigo)}
+#portItems .list-item-edit{
+  position:relative;overflow:hidden;
+  background:linear-gradient(145deg,rgba(255,255,255,0.055),rgba(255,255,255,0.018)),var(--bg3);
+}
+#portItems .list-item-edit::before{
+  content:'';position:absolute;inset:0 0 auto;height:2px;
+  background:linear-gradient(90deg,var(--indigo),var(--sky));
+}
+
+/* Responsive */
+@media(max-width:900px){
+  .sidebar{width:240px}.main-content{margin-right:240px;padding:22px}
+  .fields-row{grid-template-columns:1fr}
+  #portItems{grid-template-columns:1fr!important}
+}
+@media(max-width:660px){
+  .sidebar{transform:translateX(100%);transition:transform .3s var(--ease)}
+  .sidebar.open{transform:translateX(0)}
+  .main-content{margin-right:0}
+  .mob-menu-btn{display:flex!important}
+  .stats-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Loader -->
+<div id="adminLoader">
+  <div class="loader-brand">Hydra<span>.</span></div>
+  <div class="loader-sub">جاري تحميل لوحة التحكم…</div>
+  <div class="loader-bar"><div class="loader-bar-inner"></div></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toastMsg">تم الحفظ بنجاح!</span>
+</div>
+
+<!-- ═══════ LOGIN ═══════ -->
+<div id="loginPage">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="brand">Hydra<span>.</span></div>
+      <p>لوحة تحكم Hydra</p>
+    </div>
+    <div class="login-error" id="loginError">❌ البريد أو كلمة المرور غلط</div>
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="email" placeholder="admin@mn.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label>كلمة المرور</label>
+        <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="login-btn">دخول للوحة التحكم</button>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════ DASHBOARD ═══════ -->
+<div id="dashboard" style="display:flex">
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand">Hydra<span>.</span></div>
+      <p>لوحة التحكم الكاملة</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">الصفحة الرئيسية</div>
+      <div class="nav-item active" onclick="showPanel('home')">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+        Hero / الرئيسية
+      </div>
+      <div class="nav-item" onclick="showPanel('about')">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg></span>
+        قسم "عني"
+      </div>
+      <div class="nav-group-label">الخدمات والمهارات</div>
+      <div class="nav-item" onclick="showPanel('services')">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>
+        الخدمات
+      </div>
+      <div class="nav-item" onclick="showPanel('skills')">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+        التقنيات
+      </div>
+      <div class="nav-item" onclick="showPanel('delivery')">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+        خطة العمل
+      </div>
+      <div class="nav-group-label">الأعمال والمحتوى</div>
+      <div class="nav-item" onclick="showPanel('portfolio')">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span>
+        معرض الأعمال
+      </div>
+      <div class="nav-item" onclick="showPanel('faq')">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+        الأسئلة الشائعة
+      </div>
+      <div class="nav-group-label">التواصل والإعدادات</div>
+      <div class="nav-item" onclick="showPanel('contact')">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 3.07 9.81a19.79 19.79 0 0 1-3.07-8.68A2 2 0 0 1 2 .98h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L6.09 8.83a16 16 0 0 0 6.29 6.29l1.21-1.21a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+        التواصل
+      </div>
+      <div class="nav-item" onclick="showPanel('settings')">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        الإعدادات
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="logout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        تسجيل الخروج
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="page-header">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="mob-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <h1>لوحة <span>التحكم</span></h1>
+      </div>
+      <a href="index.html" target="_blank" class="view-site-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        عرض الموقع
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card"><div class="num">8</div><div class="lbl">أقسام الموقع</div></div>
+      <div class="stat-card"><div class="num" id="statProjects">6</div><div class="lbl">مشاريع المعرض</div></div>
+      <div class="stat-card"><div class="num" id="statServices">4</div><div class="lbl">خدمات</div></div>
+      <div class="stat-card"><div class="num" id="statFaq">6</div><div class="lbl">أسئلة شائعة</div></div>
+    </div>
+
+    <!-- ══ PANEL: HOME ══ -->
+    <div class="panel active" id="panel-home">
+      <div class="edit-card">
+        <div class="edit-card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          قسم <span>Hero</span> — الصفحة الرئيسية
+        </div>
+        <div class="fields-row">
+          <div class="field-group">
+            <label>اللوجو (صورة)</label>
+            <div class="image-upload-wrapper">
+              <div class="image-preview" id="logoPreview">🖼</div>
+              <div class="upload-controls">
+                <label class="file-input-label" for="logoUpload">اختيار صورة</label>
+                <input type="file" id="logoUpload" class="hidden-file-input" accept="image/*" onchange="handleFileUpload(event,'logo')">
+                <input type="text" id="siteLogoImgUrl" placeholder="أو رابط خارجي للصورة" style="flex:1">
+              </div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>نص اللوجو (Hydra)</label>
+            <input type="text" id="siteLogo" placeholder="Hydra">
+          </div>
+        </div>
+        <div class="field-group">
+          <label>الصورة الشخصية / Avatar</label>
+          <div class="image-upload-wrapper">
+            <div class="image-preview" id="avatarPreview" style="border-radius:50%">👤</div>
+            <div class="upload-controls">
+              <label class="file-input-label" for="avatarUpload">اختيار صورة</label>
+              <input type="file" id="avatarUpload" class="hidden-file-input" accept="image/*" onchange="handleFileUpload(event,'avatar')">
+              <input type="text" id="heroAvatarUrl" placeholder="أو رابط خارجي" style="flex:1">
+            </div>
+          </div>
+        </div>
+        <div class="fields-row">
+          <div class="field-group"><label>الاسم</label><input type="text" id="heroName"></div>
+          <div class="field-group"><label>المسمى الوظيفي</label><input type="text" id="heroTitle"></div>
+        </div>
+        <div class="field-group"><label>النص المميز فوق الاسم (Eyebrow)</label><input type="text" id="heroEyebrow" placeholder="متاح للمشاريع الجديدة"></div>
+        <div class="field-group"><label>الوصف المختصر</label><textarea id="heroDesc"></textarea></div>
+        <div class="field-group"><label>نص زر CTA</label><input type="text" id="heroCta"></div>
+        <div style="margin-bottom:16px">
+          <label style="font:700 12px var(--font-en);color:var(--soft);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:10px">إحصائيات الـ Hero</label>
+          <div class="fields-row">
+            <div class="field-group"><label>رقم 1</label><input type="text" id="heroStat1Val" placeholder="+20"></div>
+            <div class="field-group"><label>وصف رقم 1</label><input type="text" id="heroStat1Label" placeholder="واجهة جاهزة"></div>
+          </div>
+          <div class="fields-row">
+            <div class="field-group"><label>رقم 2</label><input type="text" id="heroStat2Val" placeholder="100%"></div>
+            <div class="field-group"><label>وصف رقم 2</label><input type="text" id="heroStat2Label" placeholder="متوافق مع الموبايل"></div>
+          </div>
+          <div class="fields-row">
+            <div class="field-group"><label>رقم 3</label><input type="text" id="heroStat3Val" placeholder="SEO"></div>
+            <div class="field-group"><label>وصف رقم 3</label><input type="text" id="heroStat3Label" placeholder="ظهور منظم"></div>
+          </div>
+        </div>
+        <button class="save-btn" onclick="saveSection('hero')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          حفظ قسم الرئيسية
+        </button>
+      </div>
+      <div class="edit-card">
+        <div class="edit-card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+          النصوص العامة — Footer
+        </div>
+        <div class="field-group"><label>نص حقوق النشر</label><input type="text" id="footerText" placeholder="© 2026 Hydra — جميع الحقوق محفوظة"></div>
+        <button class="save-btn" onclick="saveSection('general')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          حفظ
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ PANEL: ABOUT ══ -->
+    <div class="panel" id="panel-about">
+      <div class="edit-card">
+        <div class="edit-card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+          قسم <span>عني</span>
+        </div>
+        <div class="fields-row">
+          <div class="field-group"><label>العنوان الرئيسي</label><input type="text" id="aboutTitle" placeholder="من أنا؟"></div>
+          <div class="field-group"><label>العنوان الفرعي</label><input type="text" id="aboutSub"></div>
+        </div>
+        <div class="field-group"><label>النبذة التعريفية (Bio)</label><textarea id="aboutBio" style="min-height:110px"></textarea></div>
+        <div style="margin-bottom:16px">
+          <label style="font:700 12px var(--font-en);color:var(--soft);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:10px">الإحصائيات الثلاثة</label>
+          <div class="fields-row">
+            <div class="field-group"><label>رقم 1</label><input type="text" id="aboutStat1Num" placeholder="+3"></div>
+            <div class="field-group"><label>وصف 1</label><input type="text" id="aboutStat1Label" placeholder="سنوات خبرة"></div>
+          </div>
+          <div class="fields-row">
+            <div class="field-group"><label>رقم 2</label><input type="text" id="aboutStat2Num" placeholder="+30"></div>
+            <div class="field-group"><label>وصف 2</label><input type="text" id="aboutStat2Label" placeholder="مشروع منجز"></div>
+          </div>
+          <div class="fields-row">
+            <div class="field-group"><label>رقم 3</label><input type="text" id="aboutStat3Num" placeholder="100%"></div>
+            <div class="field-group"><label>وصف 3</label><input type="text" id="aboutStat3Label" placeholder="رضا العملاء"></div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>قيمي ومبادئي (كل سطر = قيمة)</label>
+          <div id="valuesAdmin"></div>
+          <button class="add-btn" onclick="addValue()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            إضافة قيمة جديدة
+          </button>
+        </div>
+        <button class="save-btn" onclick="saveSection('about')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          حفظ قسم عني
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ PANEL: SERVICES ══ -->
+    <div class="panel" id="panel-services">
+      <div class="edit-card">
+        <div class="edit-card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          قسم <span>الخدمات</span>
+        </div>
+        <div class="fields-row">
+          <div class="field-group"><label>العنوان الرئيسي</label><input type="text" id="servicesTitle"></div>
+          <div class="field-group"><label>العنوان الفرعي</label><input type="text" id="servicesSub"></div>
+        </div>
+        <hr style="border:0;border-top:1px solid var(--border-soft);margin:18px 0">
+        <div id="servicesAdmin"></div>
+        <button class="add-btn" onclick="addItem('services')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          إضافة خدمة جديدة
+        </button>
+        <br><br>
+        <button class="save-btn" onclick="saveSection('services')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          حفظ الخدمات
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ PANEL: SKILLS ══ -->
+    <div class="panel" id="panel-skills">
+      <div class="edit-card">
+        <div class="edit-card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          قسم <span>التقنيات</span>
+        </div>
+        <div class="fields-row">
+          <div class="field-group"><label>العنوان الرئيسي</label><input type="text" id="hSkillsTitle"></div>
+          <div class="field-group"><label>العنوان الفرعي</label><input type="text" id="hSkillsSub"></div>
+        </div>
+        <hr style="border:0;border-top:1px solid var(--border-soft);margin:18px 0">
+        <div id="skillItems"></div>
+        <button class="add-btn" onclick="addItem('skills')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          إضافة تقنية
+        </button>
+        <br><br>
+        <button class="save-btn" onclick="saveSection('skills')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          حفظ التقنيات
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ PANEL: DELIVERY ══ -->
+    <div class="panel" id="panel-delivery">
+      <div class="edit-card">
+        <div class="edit-card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          قسم <span>خطة العمل</span>
+        </div>
+        <div class="fields-row">
+          <div class="field-group"><label>العنوان الرئيسي</label><input type="text" id="hDeliveryTitle"></div>
+          <div class="field-group"><label>العنوان الفرعي</label><input type="text" id="hDeliverySub"></div>
+        </div>
+        <hr style="border:0;border-top:1px solid var(--border-soft);margin:18px 0">
+        <div id="tlItems"></div>
+        <button class="add-btn" onclick="addItem('delivery')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          إضافة مرحلة
+        </button>
+        <br><br>
+        <button class="save-btn" onclick="saveSection('delivery')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          حفظ خطة العمل
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ PANEL: PORTFOLIO ══ -->
+    <div class="panel" id="panel-portfolio">
+      <div class="edit-card">
+        <div class="edit-card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          قسم <span>الأعمال</span>
+        </div>
+        <div class="fields-row">
+          <div class="field-group"><label>العنوان الرئيسي</label><input type="text" id="hPortfolioTitle"></div>
+          <div class="field-group"><label>العنوان الفرعي</label><input type="text" id="hPortfolioSub"></div>
+        </div>
+        <hr style="border:0;border-top:1px solid var(--border-soft);margin:18px 0">
+        <div id="portItems" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
+        <button class="add-btn" onclick="addItem('portfolio')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          إضافة مشروع
+        </button>
+        <br><br>
+        <button class="save-btn" onclick="saveSection('portfolio')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          حفظ الأعمال
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ PANEL: FAQ ══ -->
+    <div class="panel" id="panel-faq">
+      <div class="edit-card">
+        <div class="edit-card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          قسم <span>الأسئلة الشائعة</span>
+        </div>
+        <div class="fields-row">
+          <div class="field-group"><label>العنوان الرئيسي</label><input type="text" id="faqTitle"></div>
+          <div class="field-group"><label>العنوان الفرعي</label><input type="text" id="faqSub"></div>
+        </div>
+        <hr style="border:0;border-top:1px solid var(--border-soft);margin:18px 0">
+        <div id="faqItems"></div>
+        <button class="add-btn" onclick="addItem('faq')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          إضافة سؤال جديد
+        </button>
+        <br><br>
+        <button class="save-btn" onclick="saveSection('faq')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          حفظ الأسئلة
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ PANEL: CONTACT ══ -->
+    <div class="panel" id="panel-contact">
+      <div class="edit-card">
+        <div class="edit-card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 3.07 9.81a2 2 0 0 1 2-2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L6.09 8.83a16 16 0 0 0 6.29 6.29l1.21-1.21a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          قسم <span>التواصل</span>
+        </div>
+        <div class="fields-row">
+          <div class="field-group"><label>العنوان الرئيسي</label><input type="text" id="hContactTitle"></div>
+          <div class="field-group"><label>العنوان الفرعي</label><input type="text" id="hContactSub"></div>
+        </div>
+        <hr style="border:0;border-top:1px solid var(--border-soft);margin:18px 0">
+        <div class="fields-row">
+          <div class="field-group"><label>رقم الهاتف</label><input type="text" id="cPhone" placeholder="01040128359"></div>
+          <div class="field-group"><label>واتساب (رقم + كود الدولة)</label><input type="text" id="cWhatsapp" placeholder="201040128359"></div>
+        </div>
+        <div class="field-group"><label>رابط فيسبوك</label><input type="text" id="cFacebook" placeholder="https://facebook.com/..."></div>
+        <div class="field-group"><label>رابط إنستجرام</label><input type="text" id="cInstagram" placeholder="https://instagram.com/..."></div>
+        <div class="field-group"><label>رابط تيليجرام</label><input type="text" id="cTelegram" placeholder="https://t.me/..."></div>
+        <button class="save-btn" onclick="saveSection('contact')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          حفظ بيانات التواصل
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ PANEL: SETTINGS ══ -->
+    <div class="panel" id="panel-settings">
+      <div class="edit-card">
+        <div class="edit-card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          تغيير بيانات <span>الدخول</span>
+        </div>
+        <div class="pass-info">البريد الحالي: <strong id="currentEmailDisplay"></strong></div>
+        <div class="field-group"><label>البريد الإلكتروني الجديد</label><input type="email" id="newEmail" placeholder="admin@mn.com"></div>
+        <div class="field-group"><label>كلمة المرور الجديدة</label><input type="password" id="newPass" placeholder="••••••••"></div>
+        <div class="field-group"><label>تأكيد كلمة المرور</label><input type="password" id="confirmPass" placeholder="••••••••"></div>
+        <button class="save-btn" onclick="saveCredentials()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          حفظ بيانات الدخول
+        </button>
+      </div>
+      <div class="edit-card">
+        <div class="edit-card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.33"/></svg>
+          إعادة ضبط <span>المحتوى</span>
+        </div>
+        <p style="color:var(--soft);font-size:14px;margin-bottom:18px">سيتم حذف جميع التغييرات والعودة للمحتوى الافتراضي. هذا الإجراء لا يمكن التراجع عنه.</p>
+        <button onclick="resetAll()" style="display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border:1.5px solid rgba(251,113,133,0.35);border-radius:var(--radius);background:rgba(251,113,133,0.08);color:var(--rose);font-size:14px;font-weight:700;cursor:pointer;transition:background .2s,border-color .2s" onmouseover="this.style.background='rgba(251,113,133,0.16)'" onmouseout="this.style.background='rgba(251,113,133,0.08)'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          إعادة الضبط
+        </button>
+      </div>
+    </div>
+
+  </div><!-- end main-content -->
+</div><!-- end dashboard -->
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAYm1y3AsVdlk4DNj5bIJMciLmqSsTvSGI",
+    authDomain: "profile-685e8.firebaseapp.com",
+    projectId: "profile-685e8",
+    storageBucket: "profile-685e8.firebasestorage.app",
+    messagingSenderId: "198395442971",
+    appId: "1:198395442971:web:eca9fe6903973aa21dc5be"
+  };
+  firebase.initializeApp(firebaseConfig);
+  window.db   = firebase.firestore();
+  window.auth = firebase.auth();
+  window.doc  = (db,col,id) => db.collection(col).doc(id);
+  window.getDoc  = (r) => r.get().then(s => ({ exists: ()=>s.exists, data: ()=>s.data() }));
+  window.setDoc  = (r,d) => r.set(d);
+  window.signInWithEmailAndPassword = (a,e,p) => a.signInWithEmailAndPassword(e,p);
+  window.onAuthStateChanged = (a,cb) => a.onAuthStateChanged(cb);
+  window.signOut    = (a) => a.signOut();
+  window.updateEmail    = (u,e) => u.updateEmail(e);
+  window.updatePassword = (u,p) => u.updatePassword(p);
+</script>
+<script src="admin-script.js"></script>
+</body>
+</html>
